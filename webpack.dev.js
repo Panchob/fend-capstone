@@ -11,8 +11,9 @@ module.exports = {
         filename: 'Bundle.js'
     },
     devServer: {
-        port: 8001,
-        contentBase: path.join(__dirname, './dist')
+        port: 8011,
+        contentBase: path.join(__dirname, './dist'),
+        compress: true,
     },
     mode: 'development',
     devtool: 'source-map',
@@ -20,20 +21,20 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\js$/,
+                test: '/\.js$/',
                 exclude: /node_modules/,
                 loader: 'babel-loader'
             },
             {
                 test: /\.sass$/,
-                use: ['style-loader', 'css-loader', 'sass-loader']
+                use: [ 'style-loader', 'css-loader', 'sass-loader']
             }
         ]
     },
     plugins: [
         new HtmlWebPackPlugin({
             template: "./src/client/views/index.html",
-            filename: "./'index.html"
+            filename: "./index.html"
         }),
         new CleanWebpackPlugin({
             // Simulate the removal of files
