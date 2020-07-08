@@ -6,7 +6,26 @@
     </head>
     <body>
         <main>
-            LANDING PAGE
+            <h1 class='pageTitle'>Travel Planner</h1>
+            <section class='trip'>
+                <div class='picture'>photo</div>
+                <div class='description'>Description</div>
+
+            </section>
+            <section class=form>
+                <div id="inputContainer">
+                    <label for="inputLocation">My trip to:</label>
+                    <input class="textInput" id="inputLocation" type="text" name="input" value="" placeholder="Enter location">
+                </div>
+                <div>
+                    <label for="inputDate">Departing:</label>
+                    <input class="textInput" id="inputDate" type="text" name="input" value="" placeholder="MM/DD/YY">
+                </div>
+                <div class="inputButtons">
+                    <input class="btn saveBtn" type="submit" name="" value="save trip">
+                    <input class="btn removeBtn" type="submit" name="" value="remove trip">
+                </div>
+            </section>
         </main>
     </body>
 </html>
