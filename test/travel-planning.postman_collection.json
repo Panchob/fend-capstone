@@ -1,0 +1,178 @@
+{
+	"info": {
+		"_postman_id": "854a652a-3747-4b89-b3a9-4d8f4527777e",
+		"name": "travel-planning",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "location",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "94795bb1-8450-480e-bb95-2f9f6398ae17",
+						"exec": [
+							"pm.test(\"Location 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"cityName\":\"london\",\r\n    \"country\": \"ca\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8010/location",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8010",
+					"path": [
+						"location"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "picture",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "58eb2979-95ef-40da-846a-7c8bfd78c38d",
+						"exec": [
+							"pm.test(\"Picture 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"city\":\"Paris\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8010/picture",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8010",
+					"path": [
+						"picture"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "weekForecast",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3c9060de-feef-410e-b953-d41b3a1172e1",
+						"exec": [
+							"pm.test(\"Week forecast 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"latitude\": 76.5668,\r\n    \"longitude\": -78.1018\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8010/weekForecast",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8010",
+					"path": [
+						"weekForecast"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "normalForecast",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e87de0d8-54f2-46bb-9ec3-e298a76cfb36",
+						"exec": [
+							"pm.test(\"Normal forecast 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"latitude\": 45.5017,\r\n    \"longitude\": -73.5673,\r\n    \"day\": \"18\",\r\n    \"month\": \"03\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8010/normalForecast",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8010",
+					"path": [
+						"normalForecast"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
