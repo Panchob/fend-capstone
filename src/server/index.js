@@ -6,6 +6,8 @@ const express = require('express');
 const dotenv = require('dotenv');
 const fetch = require("node-fetch");
 const { raw } = require('body-parser');
+const { handleError, ErrorHandler } = require('./error');
+const { response } = require('express');
 const app = express();
 
 dotenv.config();
@@ -18,51 +20,80 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static('dist'));
+app.use((err, req, res, next) => {
+    handleError(err, res);
+});
 
 // Landing page
 app.get('/', function (req, res) {
     res.sendFile('dist/index.html');
 });
 
-app.post('/location', async(req, res)=>{
-    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${req.body.cityName}.json?country=ca&access_token=${MAPBOX_KEY}`
-    res.send(await fetchData(url))
+app.post('/location', async(req, res)=> {
+    country = req.body.country;
+    name = req.body.cityName;
+
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${name}.json?country=${country}&access_token=${MAPBOX_KEY}`;
+
+    try {
+        const response = await fetchData(url);
+
+        if (response.hasOwnProperty('message')){
+            throw new ErrorHandler(404, response.message);
+        }
+        else if (response.features.length === 0) {
+            throw new ErrorHandler(404, 'The city does not exists');
+        }
+        else
+        {
+            res.send(response)
+        }
+    } catch (error) {
+        console.log("error", error)
+        res.status(error.statusCode).send(error);
+    }
 });
 
 app.post('/weekForecast', async(req, res)=>{
     const lat = req.body.latitude;
     const lon = req.body.longitude;
-    const day = req.body.day;
 
-    const url =`https://api.weatherbit.io/v2.0/forecast/daily?lat=76.5668&lon=-78.1018&key=${WEATHERBIT_KEY}`
-    res.send(await fetchData(url))
+    const url =`https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&key=${WEATHERBIT_KEY}`
+
+    try{
+       res.send(await fetchData(url))
+    } catch (error)
+    {
+        console.log("error", error)
+    }
 });
 
 app.post('/normalForecast', async(req, res)=> {
     const lat = req.body.latitude;
     const lon = req.body.longitude;
-    const date = req.body.date
+    const day = req.body.day
+    const month = req.body.month
 
-    const url = `https://api.weatherbit.io/v2.0/normals?lat=38.0&lon=-78.0&start_day=02-02&end_day=03-01&tp=daily&key=${WEATHERBIT_KEY}`
+    const url = `https://api.weatherbit.io/v2.0/normals?lat=${lat}&lon=${lon}&start_day=${month}-${day}&end_day=${month}-${day}&tp=daily&key=${WEATHERBIT_KEY}`
 
     res.send(await fetchData(url));
 });
 
 app.post('/picture', async(req, res)=>{
-    const url =`https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${req.body.city}&image_type=photo&pretty=true`
-    res.send(await fetchData(url))
+    const url =`https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${req.body.city}&image_type=photo`
+    try{
+        res.send(await fetchData(url));
+    } catch {
+        console.log("error", error)
+    }
 });
 
-async function fetchData(url){
+async function fetchData(url) {
     const response = await fetch(url);
-
-    try{
-        const data = await response.json()
-        return data;
-    }catch{
-        console.log("error", error);
-    }
+    return await response.json();
 }
+
+
 
 // Designates what port the app will listen to for incoming requests
 const PORT = process.env.PORT || 8010;
