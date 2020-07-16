@@ -59,13 +59,8 @@ app.post('/weekForecast', async(req, res)=>{
     const lon = req.body.longitude;
 
     const url =`https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&key=${WEATHERBIT_KEY}`
+    res.send(await fetchData(url));
 
-    try{
-       res.send(await fetchData(url))
-    } catch (error)
-    {
-        console.log("error", error)
-    }
 });
 
 app.post('/normalForecast', async(req, res)=> {
