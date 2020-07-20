@@ -7,29 +7,28 @@
     <body>
         <main>
             <h1 class='pageTitle'>Travel Planner</h1>
-            <section class='trip'>
-                <div class='picture'>photo</div>
-                <div class='description'>Description</div>
+            <section id="tripContainer"></section>
+            <section class=form>
+                <form action="">
+                    <div id="locationContainer"></div>
+                        <label for="inputLocation">My trip to:</label>
+                        <input class="textInput" id="inputLocation" type="text" name="input" value="" placeholder="Enter location">
+                    </div>
+                    <div>
+                        <label for="inputCountry">Country:</label>
+                        <input class="textInput" id="inputCountry" type="text" name="input" value="" placeholder="Enter location">
+                    </div>
+                    <div>
+                        <label for="inputDate">Departing:</label>
+                        <input class="textInput" type="date" id="inputDate" name="input">
+                    </div>
+                    <div class="inputButtons">
+                        <input class="btn saveBtn" id ="mainSaveBtn" type="submit" name="" value="save trip" onclick="return Client.createTrip(event)" onsubmit="return client.createTrp(event)">
+                        <input class="btn removeBtn" id ="mainRemoveBtn"type="submit" name="" value="remove trip">
+                    </div>
+                </form>
 
             </section>
-            <form class=form>
-                <div id="locationContainer">
-                    <label for="inputLocation">My trip to:</label>
-                    <input class="textInput" id="inputLocation" type="text" name="input" value="" placeholder="Enter location">
-                </div>
-                <div>
-                    <label for="inputCountry">Country:</label>
-                    <input class="textInput" id="inputCountry" type="text" name="input" value="" placeholder="Enter location">
-                </div>
-                <div>
-                    <label for="inputDate">Departing:</label>
-                    <input class="textInput" type="date" id="inputDate" name="input" value="" placeholder="YYYY/MM/DD">
-                </div>
-                <div class="inputButtons">
-                    <input class="btn saveBtn" id ="mainSaveBtn" type="submit" name="" value="save trip" onclick="return Client.createTrip(event)" onsubmit="return client.createTrp(event)">
-                    <input class="btn removeBtn" id ="mainRemoveBtn"type="submit" name="" value="remove trip">
-                </div>
-            </form>
         </main>
     </body>
 </html>
