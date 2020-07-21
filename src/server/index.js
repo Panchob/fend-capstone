@@ -75,7 +75,7 @@ app.post('/normalForecast', async(req, res)=> {
 });
 
 app.post('/picture', async(req, res)=>{
-    const url =`https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${req.body.city}&image_type=photo`
+    const url =`https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${req.body.searchTerm}&category=travel&image_type=photo`
     try{
         res.send(await fetchData(url));
     } catch {

@@ -8,17 +8,22 @@ function createTrip(event){
 
     const city = document.getElementById('inputLocation').value;
     const country = document.getElementById('inputCountry').value;
-
     
     coordinates(city, country)
     .then((forecastData) => {
 
-        Promise.all([getForecast(forecastData), picture("http://localhost:8010/picture", {city:city})])
+        const tripDate = new Date(document.getElementById('inputDate').value);
+        forecastData["date"] = tripDate
+
+        Promise.all([getForecast(forecastData), picture("http://localhost:8010/picture", {searchTerm:city})])
         .then((data) => {
             const tripInfo = {
                 'city': city,
                 'country': country,
-                'imageURL': data[1]
+                'imageURL': data[1],
+                'date': tripDate,
+                'maxTemp': data[0].max_temp,
+                'minTemp': data[0].min_temp
             }
             showTrip(tripInfo)
         })
@@ -26,19 +31,21 @@ function createTrip(event){
 };
 
 function showTrip(data){
+    console.log(data)
     const tripHtml = `
     <div class="trip">
         <div class="picture">
             <img src=${data.imageURL}>
         </div>
         <div class='description'>
-            <p class="desTile">My trip to:${data.city, data.country} </p>
-            <p class="desTile">Departing: date</p>
+            <p class="desTile">My trip to: ${data.city} - ${data.country} </p>
+            <p class="desTile">Departing: ${data.date}</p>
             <div class="inputButtons">
                 <input class="btn saveBtn" id ="mainSaveBtn" type="submit" name="" value="save trip">
                 <input class="btn removeBtn" id ="mainRemoveBtn"type="submit" name="" value="remove trip">
             </div>
-            <p class="desElem">${data.city} is:  away</p>
+            <p class="desElem">Trip to ${data.city} is in ${parseInt(diffBetweenTodayAndDate(data.date))} days</p>
+            <p class="desElem">High: ${data.maxTemp} - Low: ${data.minTemp} </p>
         </div>
     </div>
      `
@@ -93,18 +100,18 @@ const normalForecast = async(url='', data={}) => {
 const picture = async(url='', data={}) => {
 
     const res = await fetch(url, getOptions(data));
+    const placeholder = await fetch(url, getOptions({searchTerm:"trip"}))
 
     try{
-        const picture = await res.json();
+        let picture = await res.json();
 
         if (picture.total == 0) {
-            //Todo: find a placeholder
-        } else {
-            console.log(picture)
-            return picture.hits[0].webformatURL
+            picture = await placeholder.json()
         }
+
+        return picture.hits[0].webformatURL
        
-    } catch {
+    } catch(error) {
         console.log("error", error);
     }
 }
@@ -125,10 +132,9 @@ const coordinates = async(city, country) => {
 }
 
 async function getForecast(forecastData) {
-    const tripDate = new Date(document.getElementById('inputDate').value);
-    const todayDate = new Date();
-
-    const diff = diffBetweenDays(tripDate, todayDate);
+    const tripDate = forecastData.date;
+    let forecast;
+    const diff = diffBetweenTodayAndDate(tripDate);
 
     if (diff < 0) {
         throw new Error('Trip date must in the future')
@@ -139,21 +145,24 @@ async function getForecast(forecastData) {
         forecastData["month"] = tripDate.getMonth();
         
 
-        return await normalForecast('http://localhost:8010/normalForecast', forecastData);
-
+        const res =  await normalForecast('http://localhost:8010/normalForecast', forecastData);
+        forecast = res.data[0]
     } else {
-
-        return await weekForecast('http://localhost:8010/weekForecast', forecastData );
+        const res = await weekForecast('http://localhost:8010/weekForecast', forecastData );
+        forecast = res.data[parseInt(diff)]
     }
+
+    return forecast
 }
 
-function diffBetweenDays(date1, date2) {
+function diffBetweenTodayAndDate(date) {
+    const todayDate = new Date();
 
-    if ( date1 === undefined || date2 === undefined) {
+    if ( date === undefined || todayDate === undefined) {
         throw new Error('Both dates must be provided');
     }
 
-    const diffInTime = date1.getTime() - date2.getTime();
+    const diffInTime = date.getTime() - todayDate.getTime();
     const diffInDays = diffInTime / (1000 * 3600 * 24);
 
     return diffInDays;
@@ -170,4 +179,4 @@ function getOptions(data) {
     }
 }
 
-export { createTrip, diffBetweenDays, coordinates, weekForecast }
+export { createTrip, diffBetweenTodayAndDate, coordinates, weekForecast }
