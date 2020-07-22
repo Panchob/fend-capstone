@@ -30,6 +30,8 @@ function createTrip(event){
     });
 };
 
+
+// Adds a new div containing trip information.
 function showTrip(data){
     console.log(data)
     const tripHtml = `
@@ -50,11 +52,12 @@ function showTrip(data){
     </div>
      `
     
-    document.getElementById('tripContainer').insertAdjacentHTML("afterbegin", tripHtml);
+    document.getElementById('tripContainer').insertAdjacentHTML("beforeend", tripHtml);
 }
 
 
-
+// Fetch lon and lat of a city
+// data needed: city name and country
 const location = async(url='', data={}) => {
 
     const res = await fetch(url, getOptions(data));
@@ -72,6 +75,8 @@ const location = async(url='', data={}) => {
     }
 };
 
+// Needs latitude and longitude
+// Fetch forecast for next 7 days
 const weekForecast = async(url='', data={}) => {
 
     const res = await fetch(url, getOptions(data));
@@ -85,6 +90,8 @@ const weekForecast = async(url='', data={}) => {
     }
 }
 
+// Needs latitude, longitude, a month and a date
+// fetch normal weather at that time of the year
 const normalForecast = async(url='', data={}) => {
     
     const res = await fetch(url, getOptions(data));
@@ -97,6 +104,8 @@ const normalForecast = async(url='', data={}) => {
     }
 }
 
+// needs a search term
+// fetch an image in the category "trip"
 const picture = async(url='', data={}) => {
 
     const res = await fetch(url, getOptions(data));
@@ -115,6 +124,7 @@ const picture = async(url='', data={}) => {
         console.log("error", error);
     }
 }
+
 const coordinates = async(city, country) => {
     try{
         const countryCodeRes = await(fetch(`https://restcountries.eu/rest/v2/name/${country}?fullText=true`));
@@ -144,7 +154,6 @@ async function getForecast(forecastData) {
         forecastData["day"] = tripDate.getDay();
         forecastData["month"] = tripDate.getMonth();
         
-
         const res =  await normalForecast('http://localhost:8010/normalForecast', forecastData);
         forecast = res.data[0]
     } else {
