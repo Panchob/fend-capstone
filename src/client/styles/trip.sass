@@ -1,3 +1,11 @@
+@mixin for-phone-only
+  @media (max-width: 1200px) { @content; }
+
+
+@mixin for-desktop 
+  @media (min-width: 1201px) { @content; }
+
+
 .description
     display: flex
     flex-direction: column
@@ -10,21 +18,32 @@
     font-size: 30px
     font-weight: bold
 
+
 .trip
     display: grid
-    grid-template-columns: 4fr 5fr
     gap: 20px
     min-height: 30vh
     margin-bottom: 3px
     background-color: rgba(255, 238, 238, 1)
 
+    @include for-phone-only 
+        grid-template-rows: 4fr 5fr
+    
+    @include for-desktop
+        grid-template-columns: 4fr 5fr
+    
 .picture
     display: flex
     justify-content: center
+    align-items: center
     overflow: hidden
     margin: 20px
-    margin-right: 0
-    height: 80%
+    height: 90%
 
 .description
     margin: 10px
+
+    @include for-phone-only
+        display: flex
+        align-items: center
+        flex-direction: column
