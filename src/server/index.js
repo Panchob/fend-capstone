@@ -89,7 +89,6 @@ async function fetchData(url) {
 }
 
 
-
 // Designates what port the app will listen to for incoming requests
 const PORT = process.env.PORT || 8010;
 app.listen(PORT, () => {

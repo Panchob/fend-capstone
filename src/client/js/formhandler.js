@@ -1,7 +1,11 @@
 import { validText } from "./validateInput";
 import regeneratorRuntime from "regenerator-runtime";
+const { v4: uuidv4} = require("uuid")
 const fetch = require("node-fetch");
 
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
 
 function createTrip(event){
     event.preventDefault();
@@ -23,9 +27,11 @@ function createTrip(event){
                 'imageURL': data[1],
                 'date': tripDate,
                 'maxTemp': data[0].max_temp,
+                'nextWeek': data[0].nextWeek,
+                'weather': data[0].weather,
                 'minTemp': data[0].min_temp
             }
-            showTrip(tripInfo)
+            showTrip(tripInfo);
         })
     });
 };
@@ -33,21 +39,34 @@ function createTrip(event){
 
 // Adds a new div containing trip information.
 function showTrip(data){
-    console.log(data)
+    const formattedDate = `${monthNames[data.date.getMonth()]} ${data.date.getDate()} ${data.date.getFullYear()}`;
+    let weather = "";
+
+    if(data.weather) {
+        weather = "The weather will be:" + data.weather.description;
+    }
+    else {
+        weather = `The date is too far in the future to know the weather`;
+    }
+
+    // Unique id to remove easily
+    const id = uuidv4();
     const tripHtml = `
-    <div class="trip">
+    <div class="trip" id="${id}">
         <div class="picture">
             <img src=${data.imageURL}>
         </div>
         <div class='description'>
-            <p class="desTile">My trip to: ${data.city} - ${data.country} </p>
-            <p class="desTile">Departing: ${data.date}</p>
+            <p class="desTile">My trip to ${data.city} - ${data.country} </p>
+            <p class="desTile">Departing on ${formattedDate}</p>
             <div class="inputButtons">
-                <input class="btn saveBtn" id ="mainSaveBtn" type="submit" name="" value="save trip">
-                <input class="btn removeBtn" id ="mainRemoveBtn"type="submit" name="" value="remove trip">
+                <input class="btn saveBtn" id ="mainSaveBtn" type="submit"  value="save trip">
+                <input class="btn removeBtn" tripId=${id} type="submit" value="remove trip" onclick="return Client.removeTrip(this)">
             </div>
             <p class="desElem">Trip to ${data.city} is in ${parseInt(diffBetweenTodayAndDate(data.date))} days</p>
-            <p class="desElem">High: ${data.maxTemp} - Low: ${data.minTemp} </p>
+            <p class="desElem">Forecast for this date is:</p>
+            <p class="desElem"><strong>High</strong>: ${data.maxTemp} - <strong>Low</strong>: ${data.minTemp} </p>
+            <p class="desElem">${weather}</p>
         </div>
     </div>
      `
@@ -104,7 +123,7 @@ const normalForecast = async(url='', data={}) => {
     }
 }
 
-// needs a search term
+// Needs a search term
 // fetch an image in the category "trip"
 const picture = async(url='', data={}) => {
 
@@ -115,10 +134,10 @@ const picture = async(url='', data={}) => {
         let picture = await res.json();
 
         if (picture.total == 0) {
-            picture = await placeholder.json()
+            picture = await placeholder.json();
         }
 
-        return picture.hits[0].webformatURL
+        return picture.hits[0].webformatURL;
        
     } catch(error) {
         console.log("error", error);
@@ -130,14 +149,14 @@ const coordinates = async(city, country) => {
         const countryCodeRes = await(fetch(`https://restcountries.eu/rest/v2/name/${country}?fullText=true`));
 
         if (countryCodeRes.status == 404) {
-            throw new Error('Country does not exist')
+            throw new Error('Country does not exist');
         }
 
         const countryCode = await countryCodeRes.json();
         return await location('http://localhost:8010/location', {cityName: city, country: countryCode[0].alpha2Code});
 
     } catch(error) {
-        console.log("error", error)
+        console.log("error", error);
     }
 }
 
@@ -147,7 +166,7 @@ async function getForecast(forecastData) {
     const diff = diffBetweenTodayAndDate(tripDate);
 
     if (diff < 0) {
-        throw new Error('Trip date must in the future')
+        throw new Error('Trip date must in the future');
     }
 
     if (diff > 7) {
@@ -155,10 +174,10 @@ async function getForecast(forecastData) {
         forecastData["month"] = tripDate.getMonth();
         
         const res =  await normalForecast('http://localhost:8010/normalForecast', forecastData);
-        forecast = res.data[0]
+        forecast = res.data[0];
     } else {
         const res = await weekForecast('http://localhost:8010/weekForecast', forecastData );
-        forecast = res.data[parseInt(diff)]
+        forecast = res.data[parseInt(diff)];
     }
 
     return forecast
