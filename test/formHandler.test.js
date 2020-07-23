@@ -1,10 +1,4 @@
-const { diffBetweenTodayAndDate, coordinates, weekForecast } = require('../src/client/js/formHandler')
-
-test('Correct calculation of difference between two dates', () =>{
-    const date1 = new Date(2020, 5, 8);
-    const date2 = new Date(2020, 5, 5);
-    expect(diffBetweenDays(date1, date2)).toBe(3);
-});
+const {coordinates, weekForecast } = require('../src/client/js/formHandler')
 
 
 test('Correct coordinates', async ()=>{
