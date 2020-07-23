@@ -33,7 +33,7 @@ npm run build prod
 npm start
 ```
 
-The application will then run on port [8000](http://localhost:8010/).
+The application will then run on port [8010](http://localhost:8010/).
 
 ## Testing
 
