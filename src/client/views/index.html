@@ -7,7 +7,8 @@
     <body>
         <main>
             <h1 class='pageTitle'>Travel Planner</h1>
-            <section id="tripContainer"></section>
+            <section id="tripContainer">
+            </section>
             <section class=form>
                 <form action="">
                     <div id="locationContainer"></div>
@@ -23,12 +24,20 @@
                         <input class="textInput" type="date" id="inputDate" name="input">
                     </div>
                     <div class="inputButtons">
-                        <input class="btn saveBtn" id ="mainSaveBtn" type="submit" name="" value="save trip" onclick="return Client.createTrip(event)" onsubmit="return client.createTrp(event)">
-                        <input class="btn removeBtn" id ="mainRemoveBtn"type="submit" name="" value="remove trip">
+                        <input class="btn saveBtn pulse" id ="mainSaveBtn" type="submit"  value="save trip" onclick="return Client.createTrip(event)" onsubmit="return client.createTrp(event)">
+                        <input class="btn removeBtn" id ="mainRemoveBtn"type="submit" value="remove all" onclick="return Client.removeAllTrips()">
                     </div>
                 </form>
-
             </section>
         </main>
+        <script>
+            // Check that service workers are supported
+            if ('serviceWorker' in navigator) {
+                // Use the window load event to keep the page load performant
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/service-worker.js');
+                });
+            }
+        </script>
     </body>
 </html>
